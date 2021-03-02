@@ -7,7 +7,6 @@ export const Dashboard = props => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('called 1');
     dispatch(getDashboardData());
   }, []);
   const { dashboardData, dashboardDataLoading, dashboardDataError } = props;
