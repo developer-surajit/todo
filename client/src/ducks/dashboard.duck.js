@@ -10,7 +10,6 @@ export const DASHBOARD_DETAILS_ERROR = 'dashboard/DASHBOARD_DETAILS_ERROR';
 
 export const getDashboardData = history => async dispatch => {
   try {
-    console.log('called 2');
     dispatch({ type: DASHBOARD_DETAILS_FETCH });
     const dashboard = await axios.get('/api/v1/tasks/dashboard');
     console.log('called 3', dashboard);
