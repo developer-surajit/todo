@@ -229,9 +229,6 @@ export const Dashboard = props => {
         style={customStyles}
       >
         <div className="modalStyle">
-          {/* <h2 ref={_subtitle => (subtitle = _subtitle)}>Hello</h2> */}
-          {/* <button onClick={() => setOpenAddTaskModal(false)}>close</button> */}
-          <div>New Task</div>
           <Formik
             initialValues={{
               task: ''
