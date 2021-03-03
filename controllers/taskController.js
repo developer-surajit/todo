@@ -11,7 +11,7 @@ exports.aliasTopTours = (req, res, next) => {
 };
 
 exports.getAllTasks = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(Task.find(), req.query)
+  const features = new APIFeatures(Task.find({ user: req.user._id }), req.query)
     .filter()
     .sort()
     .limitFields()
@@ -45,6 +45,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
 });
 
 exports.addTask = catchAsync(async (req, res, next) => {
+  req.body.user = req.user._id;
   const newTour = await Task.create(req.body);
 
   res.status(201).json({
@@ -93,6 +94,11 @@ exports.deleteTask = catchAsync(async (req, res, next) => {
 exports.getDashboardData = catchAsync(async (req, res, next) => {
   const stats = await Task.aggregate([
     {
+      $match: {
+        user: req.user._id
+      }
+    },
+    {
       $sort: {
         createdAt: -1
       }
@@ -134,7 +140,7 @@ exports.getDashboardData = catchAsync(async (req, res, next) => {
       }
     }
   ]);
-
+  console.log({ stats });
   res.status(200).json({
     status: 'success',
     data: stats[0]

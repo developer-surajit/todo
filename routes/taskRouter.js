@@ -29,6 +29,10 @@ router
   .put(authController.protect, taskController.updateTask)
   .delete(authController.protect, taskController.deleteTask);
 
-router.get('/dashboard', taskController.getDashboardData);
+router.get(
+  '/dashboard',
+  authController.protect,
+  taskController.getDashboardData
+);
 
 module.exports = router;

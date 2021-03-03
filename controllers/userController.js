@@ -22,6 +22,17 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
     }
   });
 });
+exports.getCurrentUser = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select('-password');
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user
+    }
+  });
+});
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data

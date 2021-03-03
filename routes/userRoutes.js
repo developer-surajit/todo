@@ -24,6 +24,8 @@ router
   .get(userController.getAllUsers)
   .post(userController.createUser);
 
+router.route('/me').get(userController.getCurrentUser);
+
 router
   .route('/:id')
   .get(userController.getUser)

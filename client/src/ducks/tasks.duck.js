@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { authTokenConfig } from './auth';
+import { getDashboardData } from './dashboard.duck';
 // import { useHistory } from "react-router-dom";
 // Action types
 
@@ -72,6 +73,9 @@ export const addTask = values => async (dispatch, getState) => {
       type: ADD_TASKS_SUCCESS,
       payload: addtasks.data.data.task
     });
+    if (!getState().stat.dashboardData) {
+      dispatch(getDashboardData());
+    }
   } catch (error) {
     console.log(error);
     dispatch({ type: ADD_TASKS_ERROR, payload: error });
@@ -80,7 +84,7 @@ export const addTask = values => async (dispatch, getState) => {
 
 // Reducer
 const initialValues = {
-  allTasks: null,
+  allTasks: [],
   allTasksLoading: false,
   allTasksError: false,
 
@@ -122,7 +126,10 @@ export const tasksReducer = (state = initialValues, action) => {
         ...state,
         latestTask: action.payload,
         addTasksLoading: false,
-        allTasks: [action.payload, ...state.allTasks]
+        allTasks:
+          state.allTasks && state.allTasks.length
+            ? [action.payload, ...state.allTasks]
+            : [...action.payload]
       };
     case ADD_TASKS_ERROR:
       return {

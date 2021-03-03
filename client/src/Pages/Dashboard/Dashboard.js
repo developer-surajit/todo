@@ -47,11 +47,6 @@ const Item = ({ data }) => {
 export const Dashboard = props => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getDashboardData());
-    dispatch(getAllTasks());
-  }, []);
-
   const [openModal, setOpenAddTaskModal] = useState(false);
 
   const {
@@ -62,6 +57,16 @@ export const Dashboard = props => {
     allTasksLoading,
     allTasksError
   } = props;
+
+  const { tasksCompleted, totalTasks, latestTasks } = dashboardData || {};
+  const hasTask = allTasks && allTasks.length > 0;
+  const taskLength = allTasks && allTasks.length > 0 ? allTasks.length : 0;
+  const remainingTask = totalTasks - tasksCompleted;
+  useEffect(() => {
+    dispatch(getDashboardData());
+    dispatch(getAllTasks());
+  }, [taskLength]);
+
   if (dashboardDataError) {
     return (
       <>
@@ -73,9 +78,6 @@ export const Dashboard = props => {
   if (dashboardDataLoading) {
     return <div>Loading</div>;
   }
-  const { tasksCompleted, totalTasks, latestTasks } = dashboardData || {};
-  const hasTask = totalTasks > 0;
-
   return (
     <>
       <Header />
@@ -107,8 +109,11 @@ export const Dashboard = props => {
                   loader={<div>Loading Chart</div>}
                   data={[
                     ['Task', 'total completion'],
-                    ['Total Task', totalTasks],
-                    ['Remaining Task', totalTasks - tasksCompleted]
+                    [
+                      'Total Task',
+                      totalTasks === remainingTask ? 0 : totalTasks
+                    ],
+                    ['Remaining Task', remainingTask]
                   ]}
                   // options={{
                   //   title: 'Completed task'
