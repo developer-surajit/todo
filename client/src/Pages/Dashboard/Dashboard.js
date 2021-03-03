@@ -23,7 +23,9 @@ const customStyles = {
     right: 'auto',
     bottom: 'auto',
     marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
+    borderRadius: 10,
+    boxShadow: '0px 4px 8px 0px #00000040'
   }
 };
 const Item = ({ data }) => {
@@ -154,12 +156,17 @@ export const Dashboard = props => {
                   loader={<div>Loading Chart</div>}
                   data={[
                     ['Task', 'total completion'],
-                    [
-                      'Total Task',
-                      totalTasks === remainingTask ? 0 : totalTasks
-                    ],
+                    ['Completed Task', tasksCompleted],
                     ['Remaining Task', remainingTask]
                   ]}
+                  // data={[
+                  //   ['Task', 'total completion'],
+                  //   [
+                  //     'Total Task',
+                  //     totalTasks === remainingTask ? 0 : totalTasks
+                  //   ],
+                  //   ['Remaining Task', remainingTask]
+                  // ]}
                   // options={{
                   //   title: 'Completed task'
                   // }}

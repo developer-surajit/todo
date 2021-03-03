@@ -29,6 +29,9 @@ const Header = () => {
       <nav>
         <div className="nav-wrapper container">
           <Link to={'/'} className="brand-logo">
+            <i style={{ fontSize: '3rem' }} class="large material-icons">
+              account_circle
+            </i>{' '}
             {name}
           </Link>
 
