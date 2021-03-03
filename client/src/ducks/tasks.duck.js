@@ -11,6 +11,10 @@ export const ADD_TASKS_FETCH = 'tasks/ADD_TASKS_FETCH';
 export const ADD_TASKS_SUCCESS = 'tasks/ADD_TASKS_SUCCESS';
 export const ADD_TASKS_ERROR = 'tasks/ADD_TASKS_ERROR';
 
+export const TOGGLE_TASKS_FETCH = 'tasks/TOGGLE_TASKS_FETCH';
+export const TOGGLE_TASKS_SUCCESS = 'tasks/TOGGLE_TASKS_SUCCESS';
+export const TOGGLE_TASKS_ERROR = 'tasks/TOGGLE_TASKS_ERROR';
+
 // Actions
 
 export const getAllTasks = () => async (dispatch, getState) => {
@@ -26,6 +30,28 @@ export const getAllTasks = () => async (dispatch, getState) => {
   } catch (error) {
     console.log(error);
     dispatch({ type: TASKS_ERROR, payload: error });
+  }
+};
+export const toggleChecked = (id, val) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: TOGGLE_TASKS_FETCH, payload: id });
+
+    const editTasks = await axios.put(
+      `/api/v1/tasks/${id}`,
+      {
+        completed: !val
+      },
+      authTokenConfig(getState)
+    );
+    console.log({ editTasks });
+
+    dispatch({
+      type: TOGGLE_TASKS_SUCCESS,
+      payload: editTasks.data.data.tasks
+    });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: TOGGLE_TASKS_ERROR, payload: error });
   }
 };
 
@@ -57,6 +83,9 @@ const initialValues = {
   allTasks: null,
   allTasksLoading: false,
   allTasksError: false,
+
+  toggleTasksLoading: false,
+  toggleTasksError: false,
 
   latestTask: null,
   addTasksLoading: false,
@@ -100,6 +129,29 @@ export const tasksReducer = (state = initialValues, action) => {
         ...state,
         addTasksError: action.payload,
         addTasksLoading: false
+      };
+
+    case TOGGLE_TASKS_FETCH:
+      return {
+        ...state,
+        toggleTasksLoading: true,
+        allTasks: state.allTasks.map(item =>
+          item && item._id === action.payload
+            ? { ...item, completed: !item.completed }
+            : item
+        )
+      };
+    case TOGGLE_TASKS_SUCCESS:
+      return {
+        ...state,
+        toggleTasksLoading: false,
+        allTasks: [...state.allTasks, action.payload]
+      };
+    case TOGGLE_TASKS_ERROR:
+      return {
+        ...state,
+        toggleTasksLoading: false,
+        addTasksError: action.payload
       };
     default:
       return state;

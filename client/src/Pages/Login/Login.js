@@ -72,8 +72,12 @@ const Login = props => {
               disabled={userLoading}
             >
               {userLoading ? 'Loading...' : 'Login'}
+
               {/* <i className="material-icons right">done</i> */}
             </button>
+            {userLoadingError && (
+              <div style={{ color: 'red' }}>Incorrect username or password</div>
+            )}
           </form>
         )}
       </Formik>

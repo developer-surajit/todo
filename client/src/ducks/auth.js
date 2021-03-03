@@ -106,7 +106,8 @@ export const authReducer = (state = initialState, action) => {
     case LOGIN_USER_FETCH:
       return {
         ...state,
-        userLoading: true
+        userLoading: true,
+        userLoadingError: false
       };
     case LOGIN_USER_SUCCESS:
       localStorage.setItem('token', action.payload.token);

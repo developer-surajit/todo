@@ -4,22 +4,33 @@ import { Header } from '../../components';
 import { getDashboardData } from '../../ducks/dashboard.duck';
 import { Chart } from 'react-google-charts';
 import { loadUser } from '../../ducks/auth';
-import { addTask, getAllTasks } from '../../ducks/tasks.duck';
+import { addTask, getAllTasks, toggleChecked } from '../../ducks/tasks.duck';
 import { Field, Form, Formik, FormikProps } from 'formik';
 import { FormField } from './../../components';
 import './Dashboard.css';
 import Modal from 'react-modal';
 
 const Item = ({ data }) => {
+  const dispatch = useDispatch();
   return (
     <li className="listItem" key={data._id} onClick={() => {}}>
       <label>
-        {data.completed ? (
+        {/* {data.completed ? (
           <input type="checkbox" class="filled-in" checked={'checked'} />
         ) : (
           <input type="checkbox" class="filled-in" />
-        )}
-        <span>{data.name}</span>
+        )} */}
+        <input
+          type="checkbox"
+          class="filled-in"
+          checked={data.completed}
+          onClick={() => dispatch(toggleChecked(data._id, data.completed))}
+        />
+        <span
+          style={{ textDecoration: data.completed ? 'line-through' : null }}
+        >
+          {data.name}
+        </span>
       </label>
       <div className="cta_icons">
         <i onClick={() => {}} class="material-icons prefix">
