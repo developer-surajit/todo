@@ -4,12 +4,27 @@ import { Header } from '../../components';
 import { getDashboardData } from '../../ducks/dashboard.duck';
 import { Chart } from 'react-google-charts';
 import { loadUser } from '../../ducks/auth';
-import { addTask, getAllTasks, toggleChecked } from '../../ducks/tasks.duck';
+import {
+  addTask,
+  deleteTask,
+  FILTER_TASKS_FETCH,
+  getAllTasks,
+  toggleChecked
+} from '../../ducks/tasks.duck';
 import { Field, Form, Formik, FormikProps } from 'formik';
 import { FormField } from './../../components';
 import './Dashboard.css';
 import Modal from 'react-modal';
-
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)'
+  }
+};
 const Item = ({ data }) => {
   const dispatch = useDispatch();
   return (
@@ -33,10 +48,16 @@ const Item = ({ data }) => {
         </span>
       </label>
       <div className="cta_icons">
-        <i onClick={() => {}} class="material-icons prefix">
+        <i
+          onClick={() => alert('Feature not added yet')}
+          class="material-icons prefix"
+        >
           mode_edit
         </i>
-        <i onClick={() => {}} class="material-icons prefix">
+        <i
+          onClick={() => dispatch(deleteTask(data._id))}
+          class="material-icons prefix"
+        >
           delete
         </i>
       </div>
@@ -48,6 +69,7 @@ export const Dashboard = props => {
   const dispatch = useDispatch();
 
   const [openModal, setOpenAddTaskModal] = useState(false);
+  const [searchVal, setSearchVal] = useState('');
 
   const {
     dashboardData,
@@ -55,7 +77,8 @@ export const Dashboard = props => {
     dashboardDataError,
     allTasks,
     allTasksLoading,
-    allTasksError
+    allTasksError,
+    filteredTasks
   } = props;
 
   const { tasksCompleted, totalTasks, latestTasks } = dashboardData || {};
@@ -79,6 +102,11 @@ export const Dashboard = props => {
     return <div>Loading</div>;
   }
 
+  const setSearch = val => {
+    setSearchVal(val);
+    dispatch({ type: FILTER_TASKS_FETCH, payload: val });
+  };
+
   return (
     <>
       <Header />
@@ -87,17 +115,24 @@ export const Dashboard = props => {
           <>
             <div className="top-row-cards-container">
               <div className="top-row-cards">
-                Task completed{' '}
+                <div className="heading_main">Task completed </div>
                 <span>
                   {tasksCompleted} / {totalTasks}
                 </span>
               </div>
               <div className="top-row-cards">
-                Latest created task
+                <div className="heading_main">Latest created task</div>
                 {latestTasks && latestTasks.length > 0 ? (
                   <ul>
                     {latestTasks.map(item => (
-                      <li key={item.id}>{item.name}</li>
+                      <li
+                        style={{
+                          textDecoration: item.completed ? 'line-through' : null
+                        }}
+                        key={item.id}
+                      >
+                        {item.name}
+                      </li>
                     ))}
                   </ul>
                 ) : null}
@@ -125,9 +160,17 @@ export const Dashboard = props => {
             </div>
             {/* 2nd row */}
             <div className="taskSearchRow">
-              <h3>task</h3>
+              <div className="heading_main">Task</div>
               <div className="taskSearch">
-                <input placeholder="search" />
+                <input
+                  placeholder="Search by task name"
+                  onChange={e => {
+                    let val = e.target.value;
+                    // dispatch({ type: FILTER_TASKS_FETCH, payload: val });
+                    setSearch(val);
+                  }}
+                  style={{ marginRight: 10 }}
+                />
                 <button
                   className="btn"
                   onClick={() => setOpenAddTaskModal(true)}
@@ -138,7 +181,15 @@ export const Dashboard = props => {
             </div>
             {/* 3rd row */}
             <div>
-              {allTasks && allTasks.length > 0 ? (
+              {searchVal ? (
+                filteredTasks && filteredTasks.length ? (
+                  <ul>
+                    {filteredTasks.map(item => item && <Item data={item} />)}
+                  </ul>
+                ) : (
+                  <div>No results</div>
+                )
+              ) : allTasks && allTasks.length > 0 ? (
                 <ul>{allTasks.map(item => item && <Item data={item} />)}</ul>
               ) : null}
             </div>
@@ -158,53 +209,59 @@ export const Dashboard = props => {
         isOpen={openModal}
         // onAfterOpen={afterOpenModal}
         onRequestClose={() => setOpenAddTaskModal(false)}
-        style={{}}
         contentLabel="Example Modal"
+        style={customStyles}
       >
-        {/* <h2 ref={_subtitle => (subtitle = _subtitle)}>Hello</h2> */}
-        <button onClick={() => setOpenAddTaskModal(false)}>close</button>
-        <div>New Task</div>
-        <Formik
-          initialValues={{
-            task: ''
-          }}
-          validate={values => {
-            const errors = {};
-            if (!values.task) {
-              errors.task = 'Required';
-            }
-            return errors;
-          }}
-          onSubmit={(values, { setSubmitting }) => {
-            console.log({ values });
-            setSubmitting(true);
-            dispatch(addTask(values));
-            setOpenAddTaskModal(false);
-          }}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            handleSubmit,
-            isSubmitting
-            /* and other goodies */
-          }) => (
-            <form onSubmit={handleSubmit} className={'addFormContainer'}>
-              <div className="heading_main">Add task</div>
-              <Field name="task" placeholder="Add task" component={FormField} />
-              {errors.task && touched.task && errors.task}
+        <div className="modalStyle">
+          {/* <h2 ref={_subtitle => (subtitle = _subtitle)}>Hello</h2> */}
+          {/* <button onClick={() => setOpenAddTaskModal(false)}>close</button> */}
+          <div>New Task</div>
+          <Formik
+            initialValues={{
+              task: ''
+            }}
+            validate={values => {
+              const errors = {};
+              if (!values.task) {
+                errors.task = 'Required';
+              }
+              return errors;
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+              console.log({ values });
+              setSubmitting(true);
+              dispatch(addTask(values));
+              setOpenAddTaskModal(false);
+            }}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleSubmit,
+              isSubmitting
+              /* and other goodies */
+            }) => (
+              <form onSubmit={handleSubmit} className={'addFormContainer'}>
+                <div className="heading_main">+ New task</div>
+                <Field
+                  name="task"
+                  placeholder="Task name"
+                  component={FormField}
+                />
+                {errors.task && touched.task && errors.task}
 
-              <button
-                className="teal btn-flat white-text "
-                type="submit"
-                // disabled={userLoading}
-              >
-                {/* {userLoading ? 'Loading...' : 'Login'} */} Add task
-              </button>
-            </form>
-          )}
-        </Formik>
+                <button
+                  className="teal btn-flat white-text "
+                  type="submit"
+                  // disabled={userLoading}
+                >
+                  {/* {userLoading ? 'Loading...' : 'Login'} */} + New task
+                </button>
+              </form>
+            )}
+          </Formik>
+        </div>
       </Modal>
     </>
   );
@@ -212,14 +269,15 @@ export const Dashboard = props => {
 
 const mapStateToProps = ({
   stat: { dashboardData, dashboardDataLoading, dashboardDataError },
-  tasks: { allTasks, allTasksLoading, allTasksError }
+  tasks: { allTasks, allTasksLoading, allTasksError, filteredTasks }
 }) => ({
   dashboardData,
   dashboardDataLoading,
   dashboardDataError,
   allTasks,
   allTasksLoading,
-  allTasksError
+  allTasksError,
+  filteredTasks
 });
 
 const mapDispatchToProps = {};

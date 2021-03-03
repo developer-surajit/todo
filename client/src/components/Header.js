@@ -27,7 +27,10 @@ const Header = () => {
         </Link>
         <ul id="nav-mobile" className="right hide-on-med-and-down">
           <li>
-            <button onClick={() => dispatch({ type: LOG_OUT_USER })}>
+            <button
+              className="btn"
+              onClick={() => dispatch({ type: LOG_OUT_USER })}
+            >
               Logout
             </button>
           </li>

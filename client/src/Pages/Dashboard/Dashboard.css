@@ -5,6 +5,18 @@
   padding: 30px 0;
 }
 
+@media (max-width: 767px) {
+  .top-row-cards-container {
+    flex-direction: column;
+  }
+  .top-row-cards {
+    margin-bottom: 15px;
+  }
+  .taskSearchRow {
+    flex-direction: column;
+  }
+}
+
 .top-row-cards {
   flex: 1;
   margin-right: 10px;
