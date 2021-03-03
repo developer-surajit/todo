@@ -75,9 +75,10 @@ export const Dashboard = props => {
       </>
     );
   }
-  if (dashboardDataLoading) {
+  if (!dashboardData && dashboardDataLoading) {
     return <div>Loading</div>;
   }
+
   return (
     <>
       <Header />
