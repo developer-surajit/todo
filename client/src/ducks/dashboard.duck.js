@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { authTokenConfig } from './auth';
 // import { useHistory } from "react-router-dom";
 // Action types
 
@@ -8,10 +9,14 @@ export const DASHBOARD_DETAILS_ERROR = 'dashboard/DASHBOARD_DETAILS_ERROR';
 
 // Actions
 
-export const getDashboardData = history => async dispatch => {
+export const getDashboardData = () => async (dispatch, getState) => {
   try {
     dispatch({ type: DASHBOARD_DETAILS_FETCH });
-    const dashboard = await axios.get('/api/v1/tasks/dashboard');
+    console.log('kkk', authTokenConfig(getState));
+    const dashboard = await axios.get(
+      '/api/v1/tasks/dashboard',
+      authTokenConfig(getState)
+    );
     console.log('called 3', dashboard);
     dispatch({
       type: DASHBOARD_DETAILS_SUCCESS,

@@ -5,20 +5,22 @@ import {
   Redirect,
   Switch
 } from 'react-router-dom';
-import { Header, Survey, Landing, SurveyNew } from './components';
 import { useDispatch, connect } from 'react-redux';
 
-import { SET_USER_DETAILS, getAuthDetails } from './ducks/auth';
+// import { SET_USER_DETAILS, getAuthDetails } from './ducks/auth';
 import { LoginPage, DashboardPage } from './Pages';
+import { loadUser } from './ducks/auth';
 
 const App = props => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   dispatch(getAuthDetails());
-  // }, []);
+  useEffect(() => {
+    dispatch(loadUser());
+    // console.log('token', localStorage.getItem('token'));
+  }, []);
 
   const loggedIn = !!props.user;
+
   console.log('user', props.user, loggedIn);
   return (
     <div className="App">

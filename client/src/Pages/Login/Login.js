@@ -1,19 +1,24 @@
 import React from 'react';
 import { useDispatch, connect } from 'react-redux';
 import { Field, Form, Formik, FormikProps } from 'formik';
-import FormField from './../../components/FormField';
+import { FormField } from './../../components';
 import { Link } from 'react-router-dom';
 import { login } from '../../ducks/auth';
+import './Login.css';
 
 const Login = props => {
   const dispatch = useDispatch();
-  console.log('props in surveynew', props);
+  console.log('props in surveynew');
+
+  const { userLoading, user, userLoadingError } = props;
   return (
-    <div className="container">
+    <div className="container login_container">
       <Formik
         initialValues={{
-          email: 'surajitdas94@gmail.com',
-          password: 'qwert123'
+          email: '',
+          password: ''
+          // email: 'surajitdas94@gmail.com',
+          // password: 'qwert123'
         }}
         validate={values => {
           const errors = {};
@@ -51,24 +56,22 @@ const Login = props => {
           isSubmitting
           /* and other goodies */
         }) => (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className={'formContainer'}>
+            <div className="heading_main">Login</div>
             <Field name="email" placeholder="email" component={FormField} />
-
             {errors.email && touched.email && errors.email}
             <Field
               name="password"
               placeholder="password"
               component={FormField}
             />
-
             {errors.password && touched.password && errors.password}
-
             <button
-              className="teal btn-flat right white-text"
+              className="teal btn-flat white-text "
               type="submit"
-              disabled={isSubmitting}
+              disabled={userLoading}
             >
-              Login
+              {userLoading ? 'Loading...' : 'Login'}
               {/* <i className="material-icons right">done</i> */}
             </button>
           </form>
@@ -78,7 +81,13 @@ const Login = props => {
   );
 };
 
-const mapStateToProps = state => ({});
+const mapStateToProps = ({
+  auth: { userLoading, user, userLoadingError }
+}) => ({
+  userLoading,
+  user,
+  userLoadingError
+});
 
 const mapDispatchToProps = {};
 

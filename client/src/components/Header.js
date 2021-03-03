@@ -1,8 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import StripeCheckout from 'react-stripe-checkout';
-import { buyCredit } from '../ducks/auth';
+import { LOG_OUT_USER } from '../ducks/auth';
 
 // const onToken = (token) => {
 //   console.log({ token });
@@ -28,7 +27,9 @@ const Header = () => {
         </Link>
         <ul id="nav-mobile" className="right hide-on-med-and-down">
           <li>
-            <a href="/api/logout">Logout</a>
+            <button onClick={() => dispatch({ type: LOG_OUT_USER })}>
+              Logout
+            </button>
           </li>
         </ul>
       </div>
