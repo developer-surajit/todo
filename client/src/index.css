@@ -22,3 +22,9 @@ code {
 
 .modalStyle {
 }
+
+.logOutMobile {
+  display: flex;
+  align-items: center;
+  margin: 20px 15px;
+}

@@ -40,6 +40,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: white;
+  padding: 15px 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }
 .cta_icons i {
   cursor: pointer;

@@ -15,6 +15,7 @@ import { Field, Form, Formik, FormikProps } from 'formik';
 import { FormField } from './../../components';
 import './Dashboard.css';
 import Modal from 'react-modal';
+import M from 'materialize-css/dist/js/materialize.min.js';
 const customStyles = {
   content: {
     top: '50%',
@@ -90,6 +91,14 @@ export const Dashboard = props => {
     dispatch(getAllTasks());
   }, [taskLength]);
 
+  useEffect(() => {
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.sidenav');
+      console.log('444', elems);
+      M.Sidenav.init(elems, {});
+    });
+  }, []);
+
   if (dashboardDataError) {
     return (
       <>
@@ -123,7 +132,7 @@ export const Dashboard = props => {
               <div className="top-row-cards">
                 <div className="heading_main">Latest created task</div>
                 {latestTasks && latestTasks.length > 0 ? (
-                  <ul>
+                  <ol>
                     {latestTasks.map(item => (
                       <li
                         style={{
@@ -134,7 +143,7 @@ export const Dashboard = props => {
                         {item.name}
                       </li>
                     ))}
-                  </ul>
+                  </ol>
                 ) : null}
               </div>
               <div className="top-row-cards">

@@ -16,6 +16,7 @@ const App = props => {
 
   useEffect(() => {
     dispatch(loadUser());
+
     // console.log('token', localStorage.getItem('token'));
   }, []);
 
